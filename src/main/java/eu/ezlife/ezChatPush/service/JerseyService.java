@@ -23,21 +23,6 @@ import eu.ezlife.ezChatPush.beans.Employees;
 @Path("/employees")
 public class JerseyService 
 {
-	@RolesAllowed("ADMIN")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Employees getAllEmployees() 
-	{
-		Employees list = new Employees();
-		list.setEmployeeList(new ArrayList<Employee>());
-		
-		list.getEmployeeList().add(new Employee(1, "Lokesh Gupta"));
-		list.getEmployeeList().add(new Employee(2, "Alex Kolenchiskey"));
-		list.getEmployeeList().add(new Employee(3, "David Kameron"));
-		
-		return list;
-	}
 	
 	@RolesAllowed("ADMIN")
 	@POST
