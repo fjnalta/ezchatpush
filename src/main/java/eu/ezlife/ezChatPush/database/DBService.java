@@ -2,6 +2,8 @@ package eu.ezlife.ezChatPush.database;
 
 /**
  * Created by ajo on 05.04.17.
+ *
+ * This Class handles the Database Access
  */
 
 import eu.ezlife.ezChatPush.beans.AppID;
