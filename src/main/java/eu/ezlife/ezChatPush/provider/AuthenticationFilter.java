@@ -87,28 +87,6 @@
 	        }
 	    }
 
-	    private boolean isUserAllowedToRegisterDevice(final String username, final String appKey) {
-	    	boolean isAllowed = false;
-
-	    	// Check if AppKey matches App
-
-	    	// Check if user is in Openfire DB
-
-	    	return isAllowed;
-		}
-
-		private boolean isUserAllowedToSendMessage(final String username, final String registrationToken, final String appKey) {
-	    	boolean isAllowed = false;
-
-	    	// Check if AppKey matches App
-
-	    	// Check if the AppKey from the Client matches the GCM AppKey from local DB
-
-	    	// Check if user is in local DB
-
-	    	return isAllowed;
-		}
-
 	    private boolean isUserAllowed(final String username, final String password, final Set<String> rolesSet) {
 	        boolean isAllowed = false;
 	         
