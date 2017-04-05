@@ -52,6 +52,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return "Token [id=" + id + ", username=" + username + ", resource=" + resource + ", token:=" + token + "]";
+        return "Token [id=" + id + ", username=" + username + ", resource=" + resource + ", token=" + token + "]";
     }
 }
