@@ -172,4 +172,29 @@ public class DBService {
         disconnectDatabase();
     }
 
+    public boolean deleteUserToken(String contactName) {
+        boolean isSuccessful = false;
+
+        connectDatabase();
+        Statement stmt;
+
+        String sql = "DELETE FROM " + TABLE_TOKENS + " WHERE "
+                + COLUMN_USERNAME + "=" + "\"" + contactName + "\"";
+        try {
+            stmt = conn.createStatement();
+            int deleted = stmt.executeUpdate(sql);
+            stmt.close();
+
+            if (deleted != 0) {
+                isSuccessful = true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        disconnectDatabase();
+        return isSuccessful;
+    }
+
 }
