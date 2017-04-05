@@ -5,6 +5,7 @@ package eu.ezlife.ezChatPush.database;
  */
 
 import eu.ezlife.ezChatPush.beans.AppID;
+import eu.ezlife.ezChatPush.beans.Token;
 
 import java.sql.*;
 
@@ -119,6 +120,56 @@ public class DBService {
 
         disconnectDatabase();
         return appID;
+    }
+
+    public Token getUserToken(String contactName) {
+        connectDatabase();
+
+        Statement stmt;
+        ResultSet rs;
+        Token token = new Token();
+
+        String sql = "SELECT * FROM " + TABLE_TOKENS
+                + " WHERE " + COLUMN_USERNAME + "=" + "\"" + contactName + "\"";
+
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()) {
+                token.setId(rs.getInt(COLUMN_ID));
+                token.setUsername(rs.getString(COLUMN_USERNAME));
+                token.setResource(rs.getString(COLUMN_RESOURCE));
+                token.setToken(rs.getString(COLUMN_TOKEN));
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        disconnectDatabase();
+        return token;
+    }
+
+    public void setUserToken(Token token) {
+        connectDatabase();
+        Statement stmt;
+
+        String sql = "INSERT INTO " + TABLE_TOKENS + " VALUES("
+                + null + ", " + "\"" + token.getUsername() + "\""
+                + ", " + "\"" + token.getResource() + "\""
+                + ", " + "\"" + token.getToken() + "\"" + ")";
+
+        try {
+            stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        disconnectDatabase();
     }
 
 }
