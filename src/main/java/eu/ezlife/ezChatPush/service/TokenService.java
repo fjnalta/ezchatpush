@@ -29,6 +29,7 @@ public class TokenService {
         if(dbHandler.getUserToken(token.getUsername()).getId() == null) {
             dbHandler.setUserToken(token);
         } else {
+
             if(!dbHandler.getUserToken(token.getUsername()).getToken().equals(token.getToken())) {
                 dbHandler.setUserToken(token);
             } else {
@@ -42,7 +43,7 @@ public class TokenService {
     @RolesAllowed("ADMIN")
     @DELETE
     public Response deleteTokenByUsername(Token token) {
-        if(dbHandler.deleteUserToken(token.getUsername()) == true) {
+        if(dbHandler.deleteUserToken(token.getUsername())) {
             return Response.status(200).entity("Delete Success").build();
         } else {
             return Response.status(400).entity("Delete Failed").build();
