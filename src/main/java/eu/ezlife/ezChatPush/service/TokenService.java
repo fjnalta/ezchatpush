@@ -7,7 +7,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
@@ -42,9 +41,12 @@ public class TokenService {
 
     @RolesAllowed("ADMIN")
     @DELETE
-    @Path("/{username}")
-    public Response deleteEmployeeByUsername(@PathParam("username") String username)
-    {
-        return Response.status(202).entity("User deleted successfully").build();
+    public Response deleteTokenByUsername(Token token) {
+        if(dbHandler.deleteUserToken(token.getUsername()) == true) {
+            return Response.status(200).entity("Delete Success").build();
+        } else {
+            return Response.status(400).entity("Delete Failed").build();
+        }
+
     }
 }
