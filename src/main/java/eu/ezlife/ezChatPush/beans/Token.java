@@ -6,8 +6,6 @@ package eu.ezlife.ezChatPush.beans;
 public class Token {
     private Integer id;
     private String username;
-
-
     private String resource;
     private String token;
 
