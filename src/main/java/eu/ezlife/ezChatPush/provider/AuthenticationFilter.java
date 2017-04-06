@@ -87,7 +87,6 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
                 //Is user valid?
                 if (!isUserAllowed(username, password, rolesSet)) {
                     requestContext.abortWith(ACCESS_DENIED);
-                    System.out.println("ACCESS DENIED");
                     return;
                 }
             }
