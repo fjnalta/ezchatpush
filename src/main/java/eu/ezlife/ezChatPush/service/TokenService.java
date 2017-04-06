@@ -46,8 +46,10 @@ public class TokenService {
 
     @RolesAllowed("ADMIN")
     @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteTokenByUsername(Token token) {
-        if(dbHandler.deleteUserToken(token.getUsername())) {
+        if(dbHandler.deleteUserToken(token)) {
             return Response.status(200).entity("Delete Success").build();
         } else {
             return Response.status(400).entity("Delete Failed").build();

@@ -1,11 +1,5 @@
 package eu.ezlife.ezChatPush.database;
 
-/**
- * Created by ajo on 05.04.17.
- *
- * This Class handles the Database Access
- */
-
 import eu.ezlife.ezChatPush.beans.AppID;
 import eu.ezlife.ezChatPush.beans.Token;
 
@@ -13,6 +7,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by ajo on 05.04.17.
+ *
+ * This Class handles the Database Access
+ */
 public class DBService {
 
     //  Database settings
@@ -34,6 +33,7 @@ public class DBService {
     // Database connection
     private static Connection conn = null;
 
+    // Constructor initializes Database and creates tables
     public DBService() {
         connectDatabase();
         initializeDatabase();
@@ -199,29 +199,35 @@ public class DBService {
         disconnectDatabase();
     }
 
-    public boolean deleteUserToken(String contactName) {
+    public boolean deleteUserToken(Token token) {
         boolean isSuccessful = false;
+        List<Token> tokens = getUserToken(token.getUsername());
 
-        connectDatabase();
-        Statement stmt;
+        for(Token curToken : tokens) {
+            if(curToken.getToken().equals(token.getToken())) {
 
-        String sql = "DELETE FROM " + TABLE_TOKENS + " WHERE "
-                + COLUMN_USERNAME + "=" + "\"" + contactName + "\"";
-        try {
-            stmt = conn.createStatement();
-            int deleted = stmt.executeUpdate(sql);
-            stmt.close();
+                connectDatabase();
+                Statement stmt;
 
-            if (deleted != 0) {
-                isSuccessful = true;
+                String sql = "DELETE FROM " + TABLE_TOKENS + " WHERE "
+                        + COLUMN_USERNAME + "=" + "\"" + token.getUsername() + "\"";
+                try {
+                    stmt = conn.createStatement();
+                    int deleted = stmt.executeUpdate(sql);
+                    stmt.close();
+
+                    if (deleted != 0) {
+                        isSuccessful = true;
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                disconnectDatabase();
+
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
-        disconnectDatabase();
         return isSuccessful;
     }
-
 }
