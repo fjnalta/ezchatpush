@@ -10,14 +10,13 @@ import eu.ezlife.ezChatPush.beans.AppID;
 import eu.ezlife.ezChatPush.beans.Token;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBService {
 
-    // JDBC driver name and database URL
-    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    //  Database settings
     private static final String DB_URL = "jdbc:mysql://localhost/ezchat";
-
-    //  Database credentials
     private static final String USER = "ezchat";
     private static final String PASS = "ezchatpw";
 
@@ -124,12 +123,13 @@ public class DBService {
         return appID;
     }
 
-    public Token getUserToken(String contactName) {
+    public List<Token> getUserToken(String contactName) {
         connectDatabase();
+
+        List<Token> tokens = new ArrayList<>();
 
         Statement stmt;
         ResultSet rs;
-        Token token = new Token();
 
         String sql = "SELECT * FROM " + TABLE_TOKENS
                 + " WHERE " + COLUMN_USERNAME + "=" + "\"" + contactName + "\"";
@@ -139,10 +139,13 @@ public class DBService {
             rs = stmt.executeQuery(sql);
 
             while(rs.next()) {
+                Token token = new Token();
                 token.setId(rs.getInt(COLUMN_ID));
                 token.setUsername(rs.getString(COLUMN_USERNAME));
                 token.setResource(rs.getString(COLUMN_RESOURCE));
                 token.setToken(rs.getString(COLUMN_TOKEN));
+
+                tokens.add(token);
             }
             rs.close();
             stmt.close();
@@ -151,7 +154,29 @@ public class DBService {
         }
 
         disconnectDatabase();
-        return token;
+        return tokens;
+    }
+
+    public boolean tokenExists(String contactName, String token) {
+        List<Token> tokens = getUserToken(contactName);
+
+        for (Token curToken : tokens) {
+            if (curToken.getToken().equals(token)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean hasToken(String contactName) {
+        List<Token> tokens = getUserToken(contactName);
+
+        if(tokens != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void setUserToken(Token token) {
