@@ -8,6 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * Created by ajo on 05.04.17.
@@ -26,15 +27,18 @@ public class TokenService {
             return Response.status(400).entity("Token invalid").build();
         }
 
-        if(dbHandler.getUserToken(token.getUsername()).getId() == null) {
-            dbHandler.setUserToken(token);
-        } else {
+        List<Token> myTokens = dbHandler.getUserToken(token.getUsername());
 
-            if(!dbHandler.getUserToken(token.getUsername()).getToken().equals(token.getToken())) {
-                dbHandler.setUserToken(token);
-            } else {
-                return Response.status(400).entity("Token already exists").build();
+        if(myTokens == null) {
+            dbHandler.setUserToken(token);
+
+        } else {
+            for(Token curToken : myTokens) {
+                if(curToken.getToken().equals(token.getToken())) {
+                    return Response.status(400).entity("Token already exists").build();
+                }
             }
+            dbHandler.setUserToken(token);
         }
 
         return Response.status(200).entity(token.toString()).build();
