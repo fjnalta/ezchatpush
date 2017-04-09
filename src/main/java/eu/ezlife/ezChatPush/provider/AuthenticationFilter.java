@@ -74,6 +74,7 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
 
             final String username = tokenizer.nextToken();
             String tmpPassword = "";
+
             while (tokenizer.hasMoreTokens()) {
                 tmpPassword += tokenizer.nextToken() + ":";
             }
@@ -98,7 +99,7 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
         boolean isAllowed = false;
 
         // Check in openfire DB for username & check if token matches local DB
-        if (dbHandler.tokenExists(username, password) && openfireDbHandler.findUser(username)) {
+        if (openfireDbHandler.findUser(username)) {
             String userRole = "ADMIN";
             //Step 2. Verify user role
             if (rolesSet.contains(userRole)) {
