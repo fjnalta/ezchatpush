@@ -11,6 +11,7 @@ public class Token {
 
     public Token() {}
 
+    // TODO - remove ressource from token
     public Token(Integer id, String username, String resource, String token) {
         this.id  = id;
         this.username = username;
