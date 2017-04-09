@@ -9,15 +9,16 @@ import java.util.List;
 
 /**
  * Created by ajo on 05.04.17.
- *
  * This Class handles the Database Access
  */
 public class DBService {
 
+    private static PropertiesService props;
+
     //  Database settings
-    private static final String DB_URL = "jdbc:mysql://localhost/ezchat";
-    private static final String USER = "ezchat";
-    private static final String PASS = "ezchatpw";
+    private static String DB_URL;
+    private static String USER;
+    private static String PASS;
 
     // Database Tables
     private static final String TABLE_TOKENS = "tokens";
@@ -35,9 +36,17 @@ public class DBService {
 
     // Constructor initializes Database and creates tables
     public DBService() {
+        loadProperties();
         connectDatabase();
         initializeDatabase();
         disconnectDatabase();
+    }
+
+    private void loadProperties() {
+        props = new PropertiesService();
+        DB_URL = props.loadProperty("database");
+        USER = props.loadProperty("dbuser");
+        PASS = props.loadProperty("dbpassword");
     }
 
     public void connectDatabase() {
@@ -46,11 +55,11 @@ public class DBService {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Open a connection
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        } catch(SQLException se) {
+        } catch (SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();
         }
@@ -96,6 +105,27 @@ public class DBService {
         }
     }
 
+    // TODO - remove appid from database and load it from properties
+    public void setAppID() {
+        connectDatabase();
+
+        PropertiesService props = new PropertiesService();
+        Statement stmt;
+        String sql = "INSERT INTO " + TABLE_APPID + " VALUES("
+                + null + ", " + "\"" + props.loadProperty("appid") + "\"" + ")";
+
+        try {
+            stmt = conn.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        disconnectDatabase();
+    }
+
     public AppID getAppID() {
         connectDatabase();
 
@@ -109,7 +139,7 @@ public class DBService {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
 
-            while(rs.next()) {
+            while (rs.next()) {
                 appID.setId(rs.getInt(COLUMN_ID));
                 appID.setAppId(rs.getString(COLUMN_APPID));
             }
@@ -138,7 +168,7 @@ public class DBService {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
 
-            while(rs.next()) {
+            while (rs.next()) {
                 Token token = new Token();
                 token.setId(rs.getInt(COLUMN_ID));
                 token.setUsername(rs.getString(COLUMN_USERNAME));
@@ -172,7 +202,7 @@ public class DBService {
     public boolean hasToken(String contactName) {
         List<Token> tokens = getUserToken(contactName);
 
-        if(tokens != null) {
+        if (tokens != null) {
             return true;
         } else {
             return false;
@@ -203,8 +233,8 @@ public class DBService {
         boolean isSuccessful = false;
         List<Token> tokens = getUserToken(token.getUsername());
 
-        for(Token curToken : tokens) {
-            if(curToken.getToken().equals(token.getToken())) {
+        for (Token curToken : tokens) {
+            if (curToken.getToken().equals(token.getToken())) {
 
                 connectDatabase();
                 Statement stmt;

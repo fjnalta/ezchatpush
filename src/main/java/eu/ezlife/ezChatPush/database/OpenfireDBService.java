@@ -8,10 +8,12 @@ import java.sql.*;
 
 public class OpenfireDBService {
 
+    private static PropertiesService props;
+
     //  Database settings
-    private static final String DB_URL = "jdbc:mysql://10.0.200.24/openfire?useSSL=false";
-    private static final String USER = "ezchatpush";
-    private static final String PASS = "ezchatpushpw";
+    private static String DB_URL;
+    private static String USER;
+    private static String PASS;
 
     private static final String TABLE_USERS = "ofUser";
     private static final String COLUMN_USER = "username";
@@ -19,7 +21,17 @@ public class OpenfireDBService {
     // Database connection
     private static Connection conn = null;
 
-    public OpenfireDBService() {}
+    public OpenfireDBService() {
+        loadProperties();
+    }
+
+    private void loadProperties() {
+        props = new PropertiesService();
+
+        DB_URL = props.loadProperty("openfireDatabase");
+        USER = props.loadProperty("openfireDbuser");
+        PASS = props.loadProperty("openfireDbpassword");
+    }
 
     public void connectDatabase() {
         try {
