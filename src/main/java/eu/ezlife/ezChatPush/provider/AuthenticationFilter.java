@@ -17,7 +17,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import eu.ezlife.ezChatPush.database.DBService;
 import eu.ezlife.ezChatPush.database.OpenfireDBService;
 import org.glassfish.jersey.internal.util.Base64;
 
@@ -85,7 +84,7 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
                 Set<String> rolesSet = new HashSet<String>(Arrays.asList(rolesAnnotation.value()));
 
                 //Is user valid?
-                if (!isUserAllowed(username, password, rolesSet)) {
+                if (!isUserAllowed(username, rolesSet)) {
                     requestContext.abortWith(ACCESS_DENIED);
                     return;
                 }
@@ -93,14 +92,13 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
         }
     }
 
-    private boolean isUserAllowed(final String username, final String password, final Set<String> rolesSet) {
+    private boolean isUserAllowed(final String username, final Set<String> rolesSet) {
 
         boolean isAllowed = false;
-
-        // Check in openfire DB for username & check if token matches local DB
+        // Check for username in Openfire DB
         if (openfireDbHandler.findUser(username)) {
             String userRole = "ADMIN";
-            //Step 2. Verify user role
+            // Verify user role
             if (rolesSet.contains(userRole)) {
                 isAllowed = true;
             }
