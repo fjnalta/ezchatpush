@@ -50,18 +50,20 @@ public class MessageService {
                 // connect to GCM and send MSG
                 try {
                     URL url = new URL(API_URL);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-                    conn.setUseCaches(false);
-                    conn.setDoInput(true);
-                    conn.setDoOutput(true);
-
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Authorization","key="+AUTH_KEY);
-                    conn.setRequestProperty("Content-Type",MediaType.APPLICATION_JSON);
 
                     List<Token> contactTokens = dbHandler.getUserToken(msg.getContactName());
                     for (Token curToken : contactTokens) {
+
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+                        conn.setUseCaches(false);
+                        conn.setDoInput(true);
+                        conn.setDoOutput(true);
+
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Authorization","key="+AUTH_KEY);
+                        conn.setRequestProperty("Content-Type",MediaType.APPLICATION_JSON);
 
                         // create JSON Body
                         JSONObject wrapper = new JSONObject();
