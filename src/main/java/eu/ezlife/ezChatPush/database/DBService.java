@@ -1,11 +1,11 @@
 package eu.ezlife.ezChatPush.database;
 
-import eu.ezlife.ezChatPush.beans.AppID;
 import eu.ezlife.ezChatPush.beans.Token;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by ajo on 05.04.17.
@@ -13,48 +13,33 @@ import java.util.List;
  */
 public class DBService {
 
-    private static PropertiesService props;
-
-    //  Database settings
-    private static String DB_URL;
-    private static String USER;
-    private static String PASS;
-
     // Database Tables
     private static final String TABLE_TOKENS = "tokens";
-    private static final String TABLE_APPID = "appid";
 
     // Table Columns
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_USERNAME = "username";
-    private static final String COLUMN_RESOURCE = "resource";
     private static final String COLUMN_TOKEN = "token";
-    private static final String COLUMN_APPID = "appid";
 
     // Database connection
     private static Connection conn = null;
 
+    private PropertiesService propertiesService;
+
     // Constructor initializes Database and creates tables
     public DBService() {
-        loadProperties();
-        connectDatabase();
         initializeDatabase();
-        disconnectDatabase();
-    }
-
-    private void loadProperties() {
-        props = new PropertiesService();
-        DB_URL = props.loadProperty("database");
-        USER = props.loadProperty("dbuser");
-        PASS = props.loadProperty("dbpassword");
     }
 
     public void connectDatabase() {
         try {
             // Register JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
+            // Load Properties
+            propertiesService = new PropertiesService();
+            Properties props = propertiesService.getProp();
             // Open a connection
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(props.getProperty("database"), props.getProperty("dbuser"), props.getProperty("dbpassword"));
         } catch (SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();
@@ -66,30 +51,24 @@ public class DBService {
     }
 
     public void initializeDatabase() {
-        // create Tokens and AppId Table
+        connectDatabase();
+        // create Tokens
         Statement stmt;
 
         String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_TOKENS
                 + "(" + COLUMN_ID + " INTEGER NOT NULL AUTO_INCREMENT, "
                 + COLUMN_USERNAME + " VARCHAR(255), "
-                + COLUMN_RESOURCE + " VARCHAR(255), "
                 + COLUMN_TOKEN + " VARCHAR(255), "
-                + "PRIMARY KEY (id))";
-
-        String sql2 = "CREATE TABLE IF NOT EXISTS " + TABLE_APPID
-                + "(" + COLUMN_ID + " INTEGER NOT NULL AUTO_INCREMENT, "
-                + COLUMN_APPID + " VARCHAR(255), "
                 + "PRIMARY KEY (id))";
 
         try {
             stmt = conn.createStatement();
             stmt.execute(sql);
-            stmt.execute(sql2);
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        disconnectDatabase();
 
     }
 
@@ -103,54 +82,6 @@ public class DBService {
         } catch (SQLException se) {
             se.printStackTrace();
         }
-    }
-
-    // TODO - remove appid from database and load it from properties
-    public void setAppID() {
-        connectDatabase();
-
-        PropertiesService props = new PropertiesService();
-        Statement stmt;
-        String sql = "INSERT INTO " + TABLE_APPID + " VALUES("
-                + null + ", " + "\"" + props.loadProperty("appid") + "\"" + ")";
-
-        try {
-            stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-        disconnectDatabase();
-    }
-
-    public AppID getAppID() {
-        connectDatabase();
-
-        Statement stmt;
-        ResultSet rs;
-        AppID appID = new AppID();
-
-        String sql = "SELECT * FROM " + TABLE_APPID + " LIMIT 1";
-
-        try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                appID.setId(rs.getInt(COLUMN_ID));
-                appID.setAppId(rs.getString(COLUMN_APPID));
-            }
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        disconnectDatabase();
-        return appID;
     }
 
     public List<Token> getUserToken(String contactName) {
@@ -172,7 +103,6 @@ public class DBService {
                 Token token = new Token();
                 token.setId(rs.getInt(COLUMN_ID));
                 token.setUsername(rs.getString(COLUMN_USERNAME));
-                token.setResource(rs.getString(COLUMN_RESOURCE));
                 token.setToken(rs.getString(COLUMN_TOKEN));
 
                 tokens.add(token);
@@ -215,7 +145,6 @@ public class DBService {
 
         String sql = "INSERT INTO " + TABLE_TOKENS + " VALUES("
                 + null + ", " + "\"" + token.getUsername() + "\""
-                + ", " + "\"" + token.getResource() + "\""
                 + ", " + "\"" + token.getToken() + "\"" + ")";
 
         try {

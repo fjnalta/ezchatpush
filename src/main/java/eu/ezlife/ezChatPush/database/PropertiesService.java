@@ -10,13 +10,12 @@ import java.util.Properties;
  */
 public class PropertiesService {
 
-    private static Properties prop;
+    private Properties prop;
     private static FileInputStream fis = null;
     private static FileOutputStream fos = null;
 
     public PropertiesService() {
         prop = new Properties();
-
         initializeProperties();
     }
 
@@ -26,10 +25,10 @@ public class PropertiesService {
             System.out.println("Properties File found, loading properties");
             loadProperties();
         } catch (IOException e) {
-            System.out.println("No Properties File found, creating one");
+            System.out.println("No Properties File found, creating default");
             createProperties();
         } finally {
-            if(fis != null) {
+            if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
@@ -42,19 +41,8 @@ public class PropertiesService {
     public void loadProperties() {
         try {
             fis = new FileInputStream("config.properties");
-
             // load a properties file
             prop.load(fis);
-
-            // get the property value and print it out
-            System.out.println(prop.getProperty("appid"));
-            System.out.println(prop.getProperty("database"));
-            System.out.println(prop.getProperty("dbuser"));
-            System.out.println(prop.getProperty("dbpassword"));
-            System.out.println(prop.getProperty("openfireDatabase"));
-            System.out.println(prop.getProperty("openfireDbuser"));
-            System.out.println(prop.getProperty("openfireDbpassword"));
-
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -66,27 +54,6 @@ public class PropertiesService {
                 }
             }
         }
-    }
-
-    public String loadProperty(String property) {
-        String value = "";
-
-        try {
-            fis = new FileInputStream("config.properties");
-            value = prop.getProperty(property);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return value;
     }
 
     private void createProperties() {
@@ -116,5 +83,9 @@ public class PropertiesService {
                 }
             }
         }
+    }
+
+    public Properties getProp() {
+        return prop;
     }
 }

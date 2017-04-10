@@ -1,6 +1,7 @@
 package eu.ezlife.ezChatPush.database;
 
 import java.sql.*;
+import java.util.Properties;
 
 /**
  * Created by ajo on 06.04.17.
@@ -8,37 +9,24 @@ import java.sql.*;
 
 public class OpenfireDBService {
 
-    private static PropertiesService props;
-
-    //  Database settings
-    private static String DB_URL;
-    private static String USER;
-    private static String PASS;
-
     private static final String TABLE_USERS = "ofUser";
     private static final String COLUMN_USER = "username";
+
+    private PropertiesService propertiesService;
 
     // Database connection
     private static Connection conn = null;
 
-    public OpenfireDBService() {
-        loadProperties();
-    }
-
-    private void loadProperties() {
-        props = new PropertiesService();
-
-        DB_URL = props.loadProperty("openfireDatabase");
-        USER = props.loadProperty("openfireDbuser");
-        PASS = props.loadProperty("openfireDbpassword");
-    }
+    public OpenfireDBService() {}
 
     public void connectDatabase() {
         try {
             // Register JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Open a connection
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            propertiesService = new PropertiesService();
+            Properties props = propertiesService.getProp();
+            conn = DriverManager.getConnection(props.getProperty("openfireDatabase"), props.getProperty("openfireDbuser"), props.getProperty("openfireDbpassword"));
         } catch(SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();

@@ -3,6 +3,7 @@ package eu.ezlife.ezChatPush.service;
 import eu.ezlife.ezChatPush.beans.PushMessage;
 import eu.ezlife.ezChatPush.beans.Token;
 import eu.ezlife.ezChatPush.database.DBService;
+import eu.ezlife.ezChatPush.database.PropertiesService;
 import org.json.JSONObject;
 
 import javax.annotation.security.RolesAllowed;
@@ -19,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by ajo on 05.04.17.
@@ -26,7 +28,6 @@ import java.util.List;
 @Path("/msg")
 public class MessageService {
 
-    private static String AUTH_KEY = "";
     private final static String API_URL = "https://fcm.googleapis.com/fcm/send";
 
     private static DBService dbHandler = new DBService();
@@ -37,7 +38,9 @@ public class MessageService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendMessage(PushMessage msg) throws URISyntaxException {
 
-        AUTH_KEY = dbHandler.getAppID().getAppId();
+        PropertiesService propService = new PropertiesService();
+        Properties prop = propService.getProp();
+        String AUTH_KEY = prop.getProperty("appid");
 
         // Check if the User told the right username + token
         if(dbHandler.tokenExists(msg.getUserName(), msg.getToken())) {
