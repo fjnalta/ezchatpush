@@ -36,7 +36,6 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
     private static final Response ACCESS_DENIED = Response.status(Response.Status.UNAUTHORIZED).entity("You cannot access this resource").build();
     private static final Response ACCESS_FORBIDDEN = Response.status(Response.Status.FORBIDDEN).entity("Access blocked for all users !!").build();
 
-    private static DBService dbHandler = new DBService();
     private static OpenfireDBService openfireDbHandler = new OpenfireDBService();
 
     @Override
