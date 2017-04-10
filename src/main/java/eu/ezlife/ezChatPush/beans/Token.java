@@ -6,16 +6,13 @@ package eu.ezlife.ezChatPush.beans;
 public class Token {
     private Integer id;
     private String username;
-    private String resource;
     private String token;
 
     public Token() {}
 
-    // TODO - remove ressource from token
-    public Token(Integer id, String username, String resource, String token) {
+    public Token(Integer id, String username, String token) {
         this.id  = id;
         this.username = username;
-        this.resource = resource;
         this.token = token;
     }
 
@@ -35,14 +32,6 @@ public class Token {
         this.username = name;
     }
 
-    public String getResource() {
-        return resource;
-    }
-
-    public void setResource(String resource) {
-        this.resource = resource;
-    }
-
     public String getToken() {
         return token;
     }
@@ -53,6 +42,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return "Token [id=" + id + ", username=" + username + ", resource=" + resource + ", token=" + token + "]";
+        return "Token [id=" + id + ", username=" + username + ", token=" + token + "]";
     }
 }
