@@ -17,6 +17,13 @@ Only Device Tokens are delivered to google.
 * <b>XMPP Client</b>
     * ezChat Android App
     <br><i>Hint: you can use every XMPP app for messaging. But there won't be any PUSH support then.</i>
+
+<h3>Installation</h3>
+* Setup XMPP Server
+* Setup ezChatPush MySQL Database
+* Allow Access to Openfire User Database
+* Edit config.properties in Tomcat root folder
+
 <h2>TODO</h2>
 * normalize Database
 * include Ressource support
