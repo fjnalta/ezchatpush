@@ -36,7 +36,7 @@ public class MessageService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendMessage(PushMessage msg) throws URISyntaxException {
+    public Response sendMessage(PushMessage msg) {
 
         PropertiesService propService = new PropertiesService();
         Properties prop = propService.getProp();

@@ -22,7 +22,7 @@ public class TokenService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addToken(Token token) throws URISyntaxException {
+    public Response addToken(Token token) {
         if(token == null || token.getUsername() == null || token.getToken() == null) {
             return Response.status(400).entity("Token invalid").build();
         }
