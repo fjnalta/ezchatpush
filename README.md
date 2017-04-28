@@ -16,7 +16,7 @@ Only Device Tokens are delivered to google.
     * Firebase Cloud Messaging AppID
 * <b>XMPP Client</b>
     * ezChat Android App
-    <br><i>Hint: you can use every XMPP app for messaging. But there won't be any PUSH support then.</i>
+    <br><i>Hint: you can use any XMPP app for messaging. But there won't be any PUSH support.</i>
 
 <h3>Installation</h3>
 * Setup XMPP Server
